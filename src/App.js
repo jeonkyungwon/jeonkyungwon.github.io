@@ -1,10 +1,22 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
+import Main from "./routes/Main";
+import Career from "./routes/Career";
+import Project from "./routes/Project";
+import Introduce from "./routes/Introduce";
+import Footer from "./routes/Footer";
+
 function App() {
   return (
-    <div>
-      <h1>제발 돼돼도대ㅗ대라</h1>
-      aslkdhaksjdakjsdkajsd
-      <button>돼라</button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/career" element={<Career />} />
+        <Route path="/introduce" element={<Introduce />} />
+        <Route path="/project" element={<Project />} />
+        <Route path="/footer" element={<Footer />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
