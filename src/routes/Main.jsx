@@ -1,11 +1,21 @@
 import React from "react";
+import styled from "styled-components";
 
-function Main() {
-    return (
-        <div>
-            alksjdnasdsasa
-        </div>
-    );
-}
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+`;
+
+const Main = () => {
+  return (
+    <Wrapper>
+      <h1>Main Page</h1>
+    </Wrapper>
+  );
+};
 
 export default Main;
