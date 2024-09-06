@@ -8,7 +8,8 @@ import Footer from "./routes/Footer";
 
 const Container = styled.div`
   height: 100vh;
-  overflow: hidden; /* 스크롤바를 숨김 */
+  overflow: hidden;
+  position: relative;
 `;
 
 const Section = styled.section`
@@ -16,19 +17,42 @@ const Section = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  scroll-snap-align: start; /* 섹션 스냅을 위해 추가 */
+  scroll-snap-align: start;
+`;
+
+const IndicatorContainer = styled.div`
+  position: fixed; /* Fixed position to keep it on screen */
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const Indicator = styled.div`
+  width: ${({ active }) => (active ? "15px" : "10px")};
+  height: ${({ active }) => (active ? "15px" : "10px")};
+  background-color: ${({ active }) => (active ? "black" : "gray")};
+  border-radius: 50%;
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+  cursor: pointer; /* Pointer cursor for clickable element */
+  position: relative; /* Needed for the transform to work properly */
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
 `;
 
 function App() {
   const containerRef = useRef(null);
   const [currentSection, setCurrentSection] = useState(0);
-  const [isThrottled, setIsThrottled] = useState(false); // 스로틀링 상태 추가
-  const sectionCount = 5; // 섹션의 수
+  const [isThrottled, setIsThrottled] = useState(false);
+  const sectionCount = 5;
 
   const handleScroll = useCallback(
     (event) => {
-      if (isThrottled) return; // 스로틀링 중일 때는 무시
-      setIsThrottled(true); // 스로틀링 시작
+      if (isThrottled) return;
+      setIsThrottled(true);
 
       const deltaY = event.deltaY;
 
@@ -38,11 +62,10 @@ function App() {
         setCurrentSection((prev) => Math.max(prev - 1, 0));
       }
 
-      // 일정 시간 후 스로틀링 해제
-      setTimeout(() => setIsThrottled(false), 800); // 800ms 후에 스로틀링 해제
+      setTimeout(() => setIsThrottled(false), 800);
     },
     [isThrottled, sectionCount]
-  ); // handleScroll의 종속성 설정
+  );
 
   useEffect(() => {
     const container = containerRef.current;
@@ -52,7 +75,7 @@ function App() {
     return () => {
       container.removeEventListener("wheel", handleScroll);
     };
-  }, [handleScroll]); // handleScroll을 의존성으로 추가
+  }, [handleScroll]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -62,6 +85,11 @@ function App() {
       behavior: "smooth",
     });
   }, [currentSection]);
+
+  // Handle click on indicator to navigate to the corresponding section
+  const handleIndicatorClick = (index) => {
+    setCurrentSection(index);
+  };
 
   return (
     <Container ref={containerRef}>
@@ -80,6 +108,15 @@ function App() {
       <Section>
         <Footer />
       </Section>
+      <IndicatorContainer>
+        {Array.from({ length: sectionCount }).map((_, index) => (
+          <Indicator
+            key={index}
+            active={index === currentSection}
+            onClick={() => handleIndicatorClick(index)} // Handle click event
+          />
+        ))}
+      </IndicatorContainer>
     </Container>
   );
 }
