@@ -5,6 +5,7 @@ import Career from "./routes/Career";
 import Project from "./routes/Project";
 import Introduce from "./routes/Introduce";
 import Footer from "./routes/Footer";
+import Navbar from "./components/Navbar"; // Navbar import
 
 const Container = styled.div`
   height: 100vh;
@@ -21,7 +22,7 @@ const Section = styled.section`
 `;
 
 const IndicatorContainer = styled.div`
-  position: fixed; /* Fixed position to keep it on screen */
+  position: fixed;
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
@@ -36,8 +37,8 @@ const Indicator = styled.div`
   background-color: ${({ active }) => (active ? "black" : "gray")};
   border-radius: 50%;
   transition: width 0.3s, height 0.3s, background-color 0.3s;
-  cursor: pointer; /* Pointer cursor for clickable element */
-  position: relative; /* Needed for the transform to work properly */
+  cursor: pointer;
+  position: relative;
   transform: translate(-50%, -50%);
   left: 50%;
   top: 50%;
@@ -86,13 +87,17 @@ function App() {
     });
   }, [currentSection]);
 
-  // Handle click on indicator to navigate to the corresponding section
   const handleIndicatorClick = (index) => {
     setCurrentSection(index);
   };
 
   return (
     <Container ref={containerRef}>
+      <Navbar
+        currentSection={currentSection}
+        handleMenuClick={handleIndicatorClick}
+      />{" "}
+      {/* 반응형 Navbar */}
       <Section>
         <Main />
       </Section>
@@ -113,7 +118,7 @@ function App() {
           <Indicator
             key={index}
             active={index === currentSection}
-            onClick={() => handleIndicatorClick(index)} // Handle click event
+            onClick={() => handleIndicatorClick(index)}
           />
         ))}
       </IndicatorContainer>
