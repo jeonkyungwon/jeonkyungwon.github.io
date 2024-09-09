@@ -42,7 +42,7 @@ const MenuItem = styled.li`
   transition: border-color 0.3s;
 
   @media (max-width: 768px) {
-    padding: 5px;
+    padding: 15px;
   }
 `;
 
