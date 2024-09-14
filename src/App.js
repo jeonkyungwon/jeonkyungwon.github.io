@@ -54,6 +54,10 @@ function App() {
   const [isThrottled, setIsThrottled] = useState(false);
   const sectionCount = 5;
 
+  // 터치 이벤트 관련 상태
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+
   const handleScroll = useCallback(
     (event) => {
       if (isThrottled) return;
@@ -72,13 +76,49 @@ function App() {
     [isThrottled, sectionCount]
   );
 
+  // 터치 시작 시 Y 좌표 저장
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches[0].clientY;
+  };
+
+  // 터치 종료 시 Y 좌표 저장 및 방향 계산
+  const handleTouchEnd = () => {
+    if (isThrottled) return;
+    setIsThrottled(true);
+
+    const deltaY = touchStartY.current - touchEndY.current;
+
+    if (deltaY > 50) {
+      // 아래로 스크롤
+      setCurrentSection((prev) => Math.min(prev + 1, sectionCount - 1));
+    } else if (deltaY < -50) {
+      // 위로 스크롤
+      setCurrentSection((prev) => Math.max(prev - 1, 0));
+    }
+
+    setTimeout(() => setIsThrottled(false), 800);
+  };
+
+  const handleTouchMove = (event) => {
+    touchEndY.current = event.touches[0].clientY;
+  };
+
   useEffect(() => {
     const container = containerRef.current;
 
+    // 데스크탑에서의 마우스 휠 스크롤 이벤트
     container.addEventListener("wheel", handleScroll);
+
+    // 모바일에서의 터치 스크롤 이벤트
+    container.addEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchmove", handleTouchMove);
+    container.addEventListener("touchend", handleTouchEnd);
 
     return () => {
       container.removeEventListener("wheel", handleScroll);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
     };
   }, [handleScroll]);
 
@@ -101,7 +141,6 @@ function App() {
         currentSection={currentSection}
         handleMenuClick={handleIndicatorClick}
       />{" "}
-      {/* 반응형 Navbar */}
       <Section>
         <Main />
       </Section>
