@@ -11,6 +11,10 @@ const Container = styled.div`
   height: 100vh;
   overflow: hidden;
   position: relative;
+
+  @media (max-width: 768px) {
+    overflow: auto;
+  }
 `;
 
 const Section = styled.section`
